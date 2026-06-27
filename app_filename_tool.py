@@ -138,8 +138,8 @@ with c2:
 # Presets
 STRAIN_OPTS = ["CS", "Y[1]"]
 SEX_OPTS = ["M", "F", "Mix"]
-TREAT_OPTS = ["Exp", "Ctrl"]
-STAGE_OPTS = ["Te", "Tr1", "Tr2", "Tr3", "Tr4"]
+TREAT_OPTS = ["Demo", "Ctrl"]
+STAGE_OPTS = ["Test", "Train", "Train1", "Train2", "Train3", "Train4"]
 
 # Controls
 cA, cB, cC, cD = st.columns([1.2, 1.2, 2.0, 2.6])
