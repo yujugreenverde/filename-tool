@@ -169,9 +169,9 @@ for i in range(1, 25):
     st.session_state.setdefault(f"sex_{i}", "Mix")
     st.session_state.setdefault(f"strain_sel_{i}", "CS")
     st.session_state.setdefault(f"strain_cus_{i}", "")
-    st.session_state.setdefault(f"treat_sel_{i}", "Exp")
+    st.session_state.setdefault(f"treat_sel_{i}", "Demo")
     st.session_state.setdefault(f"treat_cus_{i}", "")
-    st.session_state.setdefault(f"stage_sel_{i}", "Te")
+    st.session_state.setdefault(f"stage_sel_{i}", "Test")
     st.session_state.setdefault(f"stage_cus_{i}", "")
 
 # Pre-pass for duplicate base detection (based on current state)
