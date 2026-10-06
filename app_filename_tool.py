@@ -3,7 +3,7 @@
 # Streamlit 檔案命名工具（雲端版 / 網頁版）
 # vCloud-1.0（覆蓋版）
 #
-# ✅ 單張表格（24列）：可編輯 widget + 欄位7即時更新 + 重複檔名紅底 ⚠
+# ✅ 單張表格（32列）：可編輯 widget + 欄位7即時更新 + 重複檔名紅底 ⚠
 # ✅ 產生「old → new」對照表：
 #    - 支援「上傳檔案（只讀檔名）」或「貼上檔名清單」
 #    - 依排序方式配對（自然排序 / 反向 / 原始順序）
@@ -164,7 +164,7 @@ with cD:
 st.divider()
 
 # Ensure defaults
-for i in range(1, 25):
+for i in range(1, 33):
     st.session_state.setdefault(f"use_{i}", (i == 1))
     st.session_state.setdefault(f"sex_{i}", "Mix")
     st.session_state.setdefault(f"strain_sel_{i}", "CS")
@@ -195,7 +195,7 @@ def current_row_values(i: int):
 
 used_idx = 0
 bases_for_dup = []
-for i in range(1, 25):
+for i in range(1, 33):
     use, strain, sex, treat, stage = current_row_values(i)
     if renumber and use:
         used_idx += 1
@@ -221,7 +221,7 @@ for col, name in zip(h, ["#", "Use", "順位", "品系", "性別", "處理", "�
 
 rows_out = []
 used_idx = 0
-for i in range(1, 25):
+for i in range(1, 33):
     c = st.columns([0.6, 0.7, 1.0, 1.3, 1.0, 1.2, 1.2, 3.4, 0.8])
     c[0].markdown(f"`{i:02d}`")
 
