@@ -145,11 +145,11 @@ STAGE_OPTS = ["Test", "Train", "Train1", "Train2", "Train3", "Train4"]
 cA, cB, cC, cD = st.columns([1.2, 1.2, 2.0, 2.6])
 with cA:
     if st.button("✅ 全選 Use"):
-        for i in range(1, 25):
+        for i in range(1, 37):
             st.session_state[f"use_{i}"] = True
 with cB:
     if st.button("❌ 全部取消"):
-        for i in range(1, 25):
+        for i in range(1, 37):
             st.session_state[f"use_{i}"] = False
 with cC:
     renumber = st.checkbox("順位依 Use=✅ 自動重排", value=True)
