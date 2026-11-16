@@ -138,7 +138,7 @@ with c2:
 # Presets
 STRAIN_OPTS = ["CS", "Y[1]"]
 SEX_OPTS = ["M", "F", "Mix"]
-TREAT_OPTS = ["Demo", "Ctrl"]
+TREAT_OPTS = ["Ctrl", "Demo", "DemoV-V","DemoV-W", "DemoH-W"]
 STAGE_OPTS = ["Test", "Train", "Train1", "Train2", "Train3", "Train4"]
 
 # Controls
@@ -166,10 +166,10 @@ st.divider()
 # Ensure defaults
 for i in range(1, 37):
     st.session_state.setdefault(f"use_{i}", (i == 1))
-    st.session_state.setdefault(f"sex_{i}", "Mix")
+    st.session_state.setdefault(f"sex_{i}", "M")
     st.session_state.setdefault(f"strain_sel_{i}", "CS")
     st.session_state.setdefault(f"strain_cus_{i}", "")
-    st.session_state.setdefault(f"treat_sel_{i}", "Demo")
+    st.session_state.setdefault(f"treat_sel_{i}", "Ctrl")
     st.session_state.setdefault(f"treat_cus_{i}", "")
     st.session_state.setdefault(f"stage_sel_{i}", "Test")
     st.session_state.setdefault(f"stage_cus_{i}", "")
