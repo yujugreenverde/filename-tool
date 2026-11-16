@@ -139,6 +139,8 @@ with c2:
 STRAIN_OPTS = ["CS", "Y[1]"]
 SEX_OPTS = ["M", "F", "Mix"]
 TREAT_OPTS = ["Ctrl", "Demo", "DemoV-V","DemoV-W", "DemoH-W"]
+P_OPTS = ["P", "noP"]
+LR_OPTS = ["L", "R"]
 STAGE_OPTS = ["Test", "Train", "Train1", "Train2", "Train3", "Train4"]
 
 # Controls
@@ -171,6 +173,8 @@ for i in range(1, 37):
     st.session_state.setdefault(f"strain_cus_{i}", "")
     st.session_state.setdefault(f"treat_sel_{i}", "Ctrl")
     st.session_state.setdefault(f"treat_cus_{i}", "")
+    st.session_state.setdefault(f"p_{i}", "P")
+    st.session_state.setdefault(f"lr_{i}", "L")
     st.session_state.setdefault(f"stage_sel_{i}", "Test")
     st.session_state.setdefault(f"stage_cus_{i}", "")
 
@@ -191,12 +195,15 @@ def current_row_values(i: int):
     stage_cus = (st.session_state.get(f"stage_cus_{i}", "") or "").strip()
     stage = stage_cus if stage_sel == "Custom" else stage_sel
 
-    return use, strain, sex, treat, stage
+    p = st.session_state.get(f"p_{i}", "P")
+    lr = st.session_state.get(f"lr_{i}", "L")
+    
+    return use, strain, sex, treat, p, lr, stage
 
 used_idx = 0
 bases_for_dup = []
 for i in range(1, 37):
-    use, strain, sex, treat, stage = current_row_values(i)
+    use, strain, sex, treat, p, lr, stage = current_row_values(i)
     if renumber and use:
         used_idx += 1
         order = f"{used_idx:02d}"
@@ -204,7 +211,7 @@ for i in range(1, 37):
         order = ""
     else:
         order = f"{i:02d}"
-    base = f"{date_str}_{order}_{strain}_{sex}_{treat}_{stage}" if order else ""
+    base = f"{date_str}_{order}_{strain}_{sex}_{treat}_{p}_{lr}_{stage}" if order else ""
     if base:
         if dup_scope == "只看 Use=✅":
             if use:
@@ -215,14 +222,21 @@ for i in range(1, 37):
 dup_bases = {k for k, v in Counter(bases_for_dup).items() if v > 1}
 
 # Single editable table
-h = st.columns([0.6, 0.7, 1.0, 1.3, 1.0, 1.2, 1.2, 3.4, 0.8])
-for col, name in zip(h, ["#", "Use", "順位", "品系", "性別", "處理", "階段", "欄位7：檔名", "Copy"]):
+widths = [0.6, 0.7, 1.0, 1.3, 1.0, 1.2, 0.9, 0.9, 1.2, 3.4, 0.8]
+
+h = st.columns(widths)
+
+for col, name in zip(
+    h,
+    ["#", "Use", "順位", "品系", "性別",
+     "處理", "P/noP", "L/R", "階段", "檔名", "Copy"]
+):
     col.markdown(f"**{name}**")
 
 rows_out = []
 used_idx = 0
 for i in range(1, 37):
-    c = st.columns([0.6, 0.7, 1.0, 1.3, 1.0, 1.2, 1.2, 3.4, 0.8])
+    c = st.columns(widths)
     c[0].markdown(f"`{i:02d}`")
 
     with c[1]:
@@ -243,17 +257,35 @@ for i in range(1, 37):
     with c[4]:
         sex = st.selectbox("", SEX_OPTS, key=f"sex_{i}", label_visibility="collapsed")
     with c[5]:
-        treat = select_or_custom("treat", TREAT_OPTS, "Exp", i)
+        treat = select_or_custom("treat", TREAT_OPTS, "Ctrl", i)
+    
     with c[6]:
-        stage = select_or_custom("stage", STAGE_OPTS, "Te", i)
-
-    filename_base = f"{date_str}_{order}_{strain}_{sex}_{treat}_{stage}" if order else ""
-    is_dup = filename_base in dup_bases and bool(filename_base)
-
+        p = st.selectbox(
+            "", P_OPTS,
+            key=f"p_{i}",
+            label_visibility="collapsed"
+        )
+    
     with c[7]:
-        st.markdown(html_filename(filename_base, is_dup=is_dup), unsafe_allow_html=True)
-
+        lr = st.selectbox(
+            "", LR_OPTS,
+            key=f"lr_{i}",
+            label_visibility="collapsed"
+        )
+    
     with c[8]:
+        stage = select_or_custom("stage", STAGE_OPTS, "Test", i)
+
+    filename_base = f"{date_str}_{order}_{strain}_{sex}_{treat}_{p}_{lr}_{stage}" if order else ""
+    is_dup = filename_base in dup_bases and bool(filename_base)
+    
+    with c[9]:
+        st.markdown(
+            html_filename(filename_base, is_dup=is_dup),
+            unsafe_allow_html=True
+        )
+    
+    with c[10]:
         if filename_base:
             clipboard_button(filename_base, f"cp_{i}")
 
@@ -265,6 +297,8 @@ for i in range(1, 37):
             "strain": strain,
             "sex": sex,
             "treatment": treat,
+            "p": p,
+            "lr": lr,
             "stage": stage,
             "filename_base": filename_base,
         }
@@ -284,7 +318,13 @@ st.subheader("⬇️ 匯出目標清單 Excel（Use=✅）")
 df_targets = df_ui[df_ui["use"]].copy()
 df_targets = df_targets[df_targets["filename_base"].astype(str).str.len() > 0].copy()
 
-df_export_targets = df_targets[["row", "order", "strain", "sex", "treatment", "stage", "filename_base"]].copy()
+df_export_targets = df_targets[
+    [
+        "row", "order", "strain", "sex",
+        "treatment", "p", "lr", "stage",
+        "filename_base"
+    ]
+].copy()
 
 targets_xlsx = build_excel_bytes(df_export_targets, "targets", f"{date_str}_{file_type}")
 st.download_button(
