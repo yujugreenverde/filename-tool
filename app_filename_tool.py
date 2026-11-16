@@ -164,7 +164,7 @@ with cD:
 st.divider()
 
 # Ensure defaults
-for i in range(1, 33):
+for i in range(1, 37):
     st.session_state.setdefault(f"use_{i}", (i == 1))
     st.session_state.setdefault(f"sex_{i}", "Mix")
     st.session_state.setdefault(f"strain_sel_{i}", "CS")
@@ -195,7 +195,7 @@ def current_row_values(i: int):
 
 used_idx = 0
 bases_for_dup = []
-for i in range(1, 33):
+for i in range(1, 37):
     use, strain, sex, treat, stage = current_row_values(i)
     if renumber and use:
         used_idx += 1
@@ -221,7 +221,7 @@ for col, name in zip(h, ["#", "Use", "順位", "品系", "性別", "處理", "�
 
 rows_out = []
 used_idx = 0
-for i in range(1, 33):
+for i in range(1, 37):
     c = st.columns([0.6, 0.7, 1.0, 1.3, 1.0, 1.2, 1.2, 3.4, 0.8])
     c[0].markdown(f"`{i:02d}`")
 
